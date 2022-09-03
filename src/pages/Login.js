@@ -11,7 +11,7 @@ export default function Login(){
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-   const signIn = (email,password) => {
+    const signIn = (email,password) => {
         setTimeout(() => {
           signInWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
@@ -21,6 +21,8 @@ export default function Login(){
             })
             .catch((error) => {
               console.log("Wrong Email/Password.");
+              const errorCode = error.code;
+              const errorMessage = error.message;
             });
         }, 2000); 
     }
