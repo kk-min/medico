@@ -227,7 +227,7 @@ export default function Register() {
 
 		<TextField
             // html input attribute
-            type="cpassword"
+            type="password"
             placeholder="Confirm Password"
             // pass down to FormLabel as children
             label="Confirm Password"
