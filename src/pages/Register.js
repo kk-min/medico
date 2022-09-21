@@ -74,10 +74,20 @@ export default function Register() {
 	};
 
 	const register = (email,password) => {
+		auth.createUserWithEmailAndPassword(email, password).then(cred => {
 		createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
+		.then((userCredential) => {]
+		//-----
 			const user = userCredential.user;
+			db.collection('Users').doc(user.uid).set({
+            		username: "Default user",
+            		gender: " ",
+            		age: " ",
+            		location: " ",
+        		});
+		//-----
 			navigate("/");
+	
 		})
   		.catch((error) => {
    		 const errorCode = error.code;
