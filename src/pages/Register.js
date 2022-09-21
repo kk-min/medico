@@ -111,7 +111,6 @@ export default function Register(props) {
 	const register = (email,password) => {
 		createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
-			props.setLoading(false);
 			const user = userCredential.user;
 			navigate("/");
 		})
