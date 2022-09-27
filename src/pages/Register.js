@@ -9,7 +9,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import {createUserDoc} from "./Firebase functions";
+import {createUserDoc} from "./firestore functions";
 
 export default function Register(props) {
 	const navigate = useNavigate();
