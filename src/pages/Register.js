@@ -9,6 +9,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import {createUserDoc} from "./Firebase functions";
 
 export default function Register(props) {
 	const navigate = useNavigate();
@@ -112,6 +113,14 @@ export default function Register(props) {
 		createUserWithEmailAndPassword(auth, email, password)
 		.then((userCredential) => {
 			const user = userCredential.user;
+			/*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
+			createUserDoc(user.uid, {
+				username: "test1",
+				age: " ",
+				gender: " ",
+				postal_code: " "
+			});
+			/*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
 			navigate("/");
 		})
   		.catch((error) => {
