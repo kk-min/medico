@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import { Typography, TextField, FormHelperText } from "@mui/material";
 import Sheet from '@mui/joy/Sheet';
 import { auth } from "../firebase";
+import '@firebase/firestore';
 import { createUserWithEmailAndPassword} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Radio from '@mui/material/Radio';
@@ -9,7 +10,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
-import {createUserDoc} from "./firestore functions";
+import {createUserDoc} from '../firestore functions.js';
+
 
 export default function Register(props) {
 	const navigate = useNavigate();
@@ -27,6 +29,7 @@ export default function Register(props) {
 	const [message, setMessage] = useState(false);
 	const [acc, setAcc] = useState(false);
 	const [emailerr, setEmailErr] = useState(false);
+	/* const [emailtaken, setEmailTaken] = useState(false); */
 	const [lenerr, setLenErr] = useState(false);
 	const [pcerror, setPcErr] = useState(false);
 	const [ageerror, setAgeError] = useState(false);
@@ -66,7 +69,7 @@ export default function Register(props) {
 		{/*setSubmitted(false);*/}
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setError(false);
 		setPwError(false);
@@ -76,6 +79,8 @@ export default function Register(props) {
 		setLenErr(false);
 		setPcErr(false);
 		setAgeError(false);
+		/* setEmailTaken(false); */
+		/* const snapshot = await firestore.collection("Users").where("email", "==", email).get(); */
 			if (name === '' || email === '' || password === ''|| cpassword===''||gender===''||postalcode===''||age==='') {
 				return setError(true);
 			}
@@ -90,6 +95,10 @@ export default function Register(props) {
 			else if (!isValidEmail(email)) {
 				return setEmailErr(true);
 			}
+			/* else if (snapshot.empty==false)
+			{
+				return setEmailTaken(true);
+			} */
 			else if (!Number(postalcode)||(postalcode.toString().length!=6)) {
 		
 				return setPcErr(true);
@@ -115,10 +124,11 @@ export default function Register(props) {
 			const user = userCredential.user;
 			/*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
 			createUserDoc(user.uid, {
-				username: "test1",
-				age: " ",
-				gender: " ",
-				postal_code: " "
+				username: name ,
+				email: email,
+				age: age,
+				gender: gender,
+				postal_code: postalcode
 			});
 			/*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
 			navigate("/");
@@ -206,6 +216,17 @@ export default function Register(props) {
 			);
 		  };
 
+		 /*  const emailTakenMessage = () => {
+			return (
+			  <div
+				className="emailtaken"
+				style={{
+				  display: emailtaken ? '' : 'none',
+				}}>
+				<h1>Email already exists!</h1>
+			  </div>
+			);
+		  }; */
 		  const invalidPostalCode = () => {
 			return (
 			   <div
@@ -261,6 +282,7 @@ export default function Register(props) {
 			{lenMessage()}
 			{invalidPostalCode()}
 			{invalidAge()}
+			{/* {emailTakenMessage()} */}
 		</div>
 	 
 		<TextField
