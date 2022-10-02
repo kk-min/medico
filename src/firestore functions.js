@@ -1,84 +1,61 @@
 // added "type": "module" to package.json to avoid error: cannot use import statement outside a module
+// import above functions from this file if needed
 
-import {db, auth} from './firebase.js';
-import { getFirestore, collection, getDoc,getDocs, doc, setDoc} from 'firebase/firestore';
+import {auth, db} from "./firebase.js";
+import { doc, addDoc, setDoc, collection, CollectionReference, getDoc, DocumentReference} from "firebase/firestore";
 
-/*
- 1. Click on user profile pic can set pic
-
- */
-
-
-//--------------0. Create new user profile document upon successful registration---------------
-const register = (email, password) =>{
-    auth.createUserWithEmailAndPassword(email, password).then(cred => {
-        return db.collection('Users').doc(cred.user.uid).set({
-            username: "Default user",
-            gender: " ",
-            age: " ",
-            location: " ",
-        }); //a doc reference in firestore, set default profile
-    })
+const createUserDoc = async(uid, data) => {
+    /* create new user document upon registration */
+    await setDoc(doc(db, 'Users', uid), data);
 }
-// Reference: https://www.youtube.com/watch?v=qWy9ylc3f9U&t=325s
-//--------------0. Create new user profile document upon successful registration---------------
 
-
-//--------------1. Display current user profile---------------
-const user = auth.currentUser;
-if (user !== null) {
-    const displayName = user.displayName;
-    const email = user.email;
-
-    const docRef = db.collection('Users').doc(user.uid);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        const gender = docSnap.get('gender');
-        const age = docSnap.get('age');
-        const location = docSnap.get('location');
-    } else {
-        console.log("No such document!");
-    }
+const createConsultHistory1 = async(uid, docId, timestamp) => {
+    /* creates a ConsultHistory document for patient and doctor respectively, returns the docReference */
+    const dCRef = collection(db, "Doctors/" + docId + "/ConsultHistory");
+    const uCRef = collection(db, "Users/" + uid + "/ConsultHistory");
+    const uDocRef = await addDoc(uCRef, {
+        docId: docId,
+        timestamp: timestamp,
+        type: "chat with doc"
+    });
+    const dDocRef = await addDoc(dCRef, {
+        ref: uDocRef,
+        patientId: uid,
+        timestamp: timestamp,
+        type: "chat with doc"
+    });
+    await setDoc(uDocRef, { ref: dDocRef }, { merge: true });
+    return {uDocRef, dDocRef};
 }
-//--------------1. Display user profile---------------
 
 
-
-
-//--------------Add new field to document---------------
-// const addField = (path, data) => {
-//   const docRef = doc(db,path);
-//   setDoc(docRef, data, { merge: true });
-// }
-// addField('Doctors/68aZDzqHubdE5fS20oEH', {dev_add1: "adding new infoooo"});
-//--------------1. Add new field to document---------------
-
-
-
-//--------------2. Update current user profile----------------------
-async function updateDoc(docRef,data) {
-    await setDoc(docRef, data);
-    console.log("Document written with ID: ", docRef.id);
+const createConsultHistory2 = async(uid, timestamp, data) => {
+    /* creates a ConsultHistory document for symptom declaration */
+    const uCRef = collection(db, "Users/" + uid + "/ConsultHistory");
+    const uDocRef = await addDoc(uCRef, {
+        timestamp: timestamp,
+        type: "symptom declaration",
+        symptoms: data
+    });
+    return uDocRef;
 }
-//--------------2. Update current user profile----------------------
 
 
-
-//---------------3. Get all user/doctor id -----------------
-async function getId(path) {
-    const querySnapshot = await getDocs(collection(db, path));
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id}`);
+const createChatHistory = async(uDocRef, dDocRef, timestamp, sender, msg) => {
+    /* create new chat history document to store chat msg */
+    /* 1 msg per document */
+    const dCRef = collection(dDocRef, "ChatHistory");
+    const uCRef = collection(uDocRef, "ChatHistory");
+    await addDoc(uCRef, {
+        from: sender,
+        timestamp: timestamp,
+        msg: msg
+    });
+    await addDoc(dCRef, {
+        from: sender,
+        timestamp: timestamp,
+        msg: msg
     });
 }
-// getId("Doctors");
-//----------------3. Get all user/doctor id -----------------
 
-
-
-//----------------4. Display document field values ----------------------
-
-
-//----------------4. Display document field values ----------------------
-
-
+export {createUserDoc, createConsultHistory1, createConsultHistory2, createChatHistory};
