@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import { Typography, TextField, FormHelperText } from "@mui/material";
+import { Typography, TextField, FormHelperText , Alert } from "@mui/material";
 import Sheet from '@mui/joy/Sheet';
 import { auth } from "../firebase";
 import '@firebase/firestore';
@@ -152,7 +152,9 @@ export default function Register(props) {
 			style={{
 			  display: message ? '' : 'none',
 			}}>
-			<h1>User {name} Successfully Registered!</h1>
+			<Alert severity="success">
+            User {name} Successfully Registered!
+           </Alert>
 		  </div>
 		);
 	  };
@@ -164,7 +166,9 @@ export default function Register(props) {
 			style={{
 			  display: error ? '' : 'none',
 			}}>
-			<h1>Please enter all the fields</h1>
+			<Alert severity="error">
+            Please enter all the fields
+           </Alert>
 		  </div>
 		);
 	  };
@@ -176,7 +180,9 @@ export default function Register(props) {
 			style={{
 			  display: lenerr ? '' : 'none',
 			}}>
-			<h1>Password must be of at least 6 characters </h1>
+			<Alert severity="error">
+            Password must be of at least 6 characters
+           </Alert>
 		  </div>
 		);
 	  };
@@ -188,7 +194,9 @@ export default function Register(props) {
 			style={{
 			  display: pwerror ? '' : 'none',
 			}}>
-			<h1>Passwords do not match!</h1>
+			<Alert severity="error">
+            Passwords do not match!
+           </Alert>
 		  </div>
 		);
 	  }
@@ -199,7 +207,9 @@ export default function Register(props) {
 					style={{
 					display: acc ? '' : 'none',
 					}}>
-					<h1>Account cannot be created!</h1>
+					<Alert severity="error">
+            		Account cannot be created!
+           			</Alert>
 				</div>
 			);
 		};
@@ -215,7 +225,9 @@ export default function Register(props) {
 				style={{
 				  display: emailerr ? '' : 'none',
 				}}>
-				<h1>Invalid Email!</h1>
+				<Alert severity="error">
+				Invalid Email!
+           		</Alert>
 			  </div>
 			);
 		  };
@@ -238,7 +250,9 @@ export default function Register(props) {
 				   style={{
 				   display: pcerror ? '' : 'none',
 				   }}>
-				   <h1>Only 6 digits postal code accepted!</h1>
+					<Alert severity="error">
+					Only 6 digits postal code accepted!
+           			</Alert>
 			   </div>
 		   );
 	   };
@@ -250,7 +264,9 @@ export default function Register(props) {
 			   style={{
 			   display: ageerror ? '' : 'none',
 			   }}>
-			   <h1>Invalid age!</h1>
+				<Alert severity="error">
+				Invalid age!
+           		</Alert>
 		   </div>
 	   );
    };
