@@ -3,18 +3,27 @@ import { TextField, Typography, Grid, CircularProgress } from '@mui/material';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import Sheet from '@mui/joy/Sheet';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import { collection, query, where, getDocs } from "firebase/firestore"; 
+import { auth,db } from '../firebase';
 
 export default function LoginUser() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-
     const navigate = useNavigate();
+    const usersRef = collection(db,'Users');
 
     const signIn = (email, password) => {
         setLoading(true);
-        setTimeout(() => {
+        setTimeout(async () => { 
+        const queryRef = query(usersRef, where("email", "==", email));
+        const querySnapshot = await getDocs(queryRef);
+        if (querySnapshot==null)
+        {
+            setLoading(false);
+            console.log('Wrong Email/Password.');
+        }
+        else {
             signInWithEmailAndPassword(auth, email, password)
                 .then((userCredential) => {
                     console.log('Logged In Successfully');
@@ -22,8 +31,10 @@ export default function LoginUser() {
                     navigate('/selection');
                 })
                 .catch((error) => {
+                    setLoading(false);
                     console.log('Wrong Email/Password.');
-                });
+            });
+        }
         }, 2000);
     };
 
