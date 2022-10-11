@@ -11,11 +11,11 @@ export default function ChatBubble(props) {
         // sent
         if (type == 'sent') {
             setAlignment('flex-end');
-            setColor('blue');
+            setColor('dodgerblue');
         } else {
             // received
             setAlignment('flex-start');
-            setColor('red');
+            setColor('#00172D');
         }
         console.log('In ChatBubble useEffect');
     });
@@ -26,7 +26,7 @@ export default function ChatBubble(props) {
                 alignItems='center'
                 justifyContent='center'
                 variant='outlined'
-                sx={{ bgcolor: color, maxWidth: '90%' }}
+                sx={{ bgcolor: color, maxWidth: '90%', margin: '20px' }}
             >
                 <CardContent>
                     <Typography color={'white'} sx={{ fontSize: 12 }}>

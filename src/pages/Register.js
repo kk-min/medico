@@ -3,8 +3,8 @@ import { Typography, TextField, FormHelperText , Alert } from "@mui/material";
 import Sheet from '@mui/joy/Sheet';
 import { auth,db } from "../firebase";
 import '@firebase/firestore';
-import { createUserWithEmailAndPassword} from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -38,41 +38,40 @@ export default function Register(props) {
 	const [pcerror, setPcErr] = useState(false);
 	const [ageerror, setAgeError] = useState(false);
 
-	const handleName = (e) => {
-		setName(e.target.value);
-		{/*setSubmitted(false);*/}
-	};
+    const handleName = (e) => {
+        setName(e.target.value);
+        {
+            /*setSubmitted(false);*/
+        }
+    };
 
-	const handleEmail = (e) => {
-		setEmail(e.target.value);
-		{/*setSubmitted(false);*/}
-	};
+    const handleEmail = (e) => {
+        setEmail(e.target.value);
+        {
+            /*setSubmitted(false);*/
+        }
+    };
 
-	const handlePassword = (e) => {
-		setPassword(e.target.value);
-		{/*setSubmitted(false);*/}
-	};
-	
-	const handleCPassword = (e) => {
-		setCPassword(e.target.value);
-		{/*setSubmitted(false);*/}
-	};
+    const handlePassword = (e) => {
+        setPassword(e.target.value);
+        {
+            /*setSubmitted(false);*/
+        }
+    };
 
-	const handlePostalCode = (e) => {
-		setPostalCode(e.target.value);
-		{/*setSubmitted(false);*/}
-	};
+    const handleCPassword = (e) => {
+        setCPassword(e.target.value);
+        {
+            /*setSubmitted(false);*/
+        }
+    };
 
-	const handleGender = (e) => {
-		setGender(e.target.value);
-		{/*setSubmitted(false);*/}
-	};
-	
-	const handleAge = (e) => {
-		setAge(e.target.value);
-		{/*setSubmitted(false);*/}
-	};
-
+    const handlePostalCode = (e) => {
+        setPostalCode(e.target.value);
+        {
+            /*setSubmitted(false);*/
+        }
+    };
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const queryRef = query(usersRef, where("email", "==", email));
@@ -123,31 +122,29 @@ export default function Register(props) {
 			}
 	};
 
-	const register = (email,password) => {
-		setLoading(true)
-		createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			const user = userCredential.user;
-			/*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
-			createUserDoc(user.uid, {
-				username: name ,
-				email: email,
-				age: age,
-				gender: gender,
-				postal_code: postalcode
-			});
-			/*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
-			setLoading(false)
-			navigate("/");
-		})
-  		.catch((error) => {
-		 props.setLoading(false);
-   		 const errorCode = error.code;
-   		 const errorMessage = error.message;
-    // ..
- 		 });
-	}
-
+    const register = (email, password) => {
+        setLoading(true);
+        createUserWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                /*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
+                createUserDoc(user.uid, {
+                    username: name,
+                    email: email,
+                    age: age,
+                    gender: gender,
+                    postal_code: postalcode,
+                });
+                /*-----------NEED TO EXTRACT DATA FROM USER INPUT------*/
+                navigate('/');
+            })
+            .catch((error) => {
+                //props.setLoading(false);
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // ..
+            });
+    };
 	const successMessage = () => {
 		return (
 		  <div
@@ -216,10 +213,9 @@ export default function Register(props) {
 				</div>
 			);
 		};
-
-		function isValidEmail(email) {
-			return /\S+@\S+\.\S+/.test(email);
-		}
+    function isValidEmail(email) {
+        return /\S+@\S+\.\S+/.test(email);
+    }
 
 		const emailerrorMessage = () => {
 			return (
@@ -276,27 +272,37 @@ export default function Register(props) {
 	   );
    };
 
-	  return (
-		<Sheet
-		sx={{
-			maxWidth: 400,
-			mx: 'auto', // margin left & right
-			my: 4, // margin top & botom
-			py: 3, // padding top & bottom
-			px: 2, // padding left & right
-			display: 'flex',
-			flexDirection: 'column',
-			gap: 2,
-			borderRadius: 'sm',
-			boxShadow: 'md',
-		  }}
-		>
-
-		<div>
-          <Typography level="h4" component="h1">
-            <b>Register Here</b>
-          </Typography>
-        </div>
+    return loading ? (
+        <Grid
+            container
+            spacing={0}
+            direction='column'
+            alignItems='center'
+            justifyContent='center'
+            sx={{ minHeight: '90vh' }}
+        >
+            <CircularProgress size={100} />
+        </Grid>
+    ) : (
+        <Sheet
+            sx={{
+                maxWidth: 400,
+                mx: 'auto', // margin left & right
+                my: 4, // margin top & botom
+                py: 3, // padding top & bottom
+                px: 2, // padding left & right
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 2,
+                borderRadius: 'sm',
+                boxShadow: 'md',
+            }}
+        >
+            <div>
+                <Typography level='h4' component='h1'>
+                    <b>Register Here</b>
+                </Typography>
+            </div>
 
 		<div className="messages">
 			{errorMessage()}
@@ -319,68 +325,84 @@ export default function Register(props) {
 			onChange={handleName}
         />
 
-		<TextField
-            type="email"
-            placeholder="medico@email.com"
-            label="Email"
-            onChange={handleEmail}
-        />
+            <TextField
+                // html input attribute
+                type='name'
+                placeholder='Name'
+                // pass down to FormLabel as children
+                label='Username'
+                onChange={handleName}
+            />
 
-		<TextField
-            type="password"
-            placeholder="password"
-            label="Password"
-            onChange={handlePassword}
-        />
+            <TextField
+                type='email'
+                placeholder='medico@email.com'
+                label='Email'
+                onChange={handleEmail}
+            />
 
-		<TextField
-            // html input attribute
-            type="password"
-            placeholder="Confirm Password"
-            // pass down to FormLabel as children
-            label="Confirm Password"
-			onChange={handleCPassword}
-        />
+            <TextField
+                type='password'
+                placeholder='password'
+                label='Password'
+                onChange={handlePassword}
+            />
 
-		<TextField
-            // html input attribute
-            type="text"
-            placeholder="6 Digits Postal Code"
-            // pass down to FormLabel as children
-            label="Postal Code"
-			onChange={handlePostalCode}
-        />
+            <TextField
+                // html input attribute
+                type='password'
+                placeholder='Confirm Password'
+                // pass down to FormLabel as children
+                label='Confirm Password'
+                onChange={handleCPassword}
+            />
 
-		<TextField
-            // html input attribute
-            type="number"
-            placeholder="Age"
-            // pass down to FormLabel as children
-            label="Age"
-			onChange={handleAge}
-        />
+            <TextField
+                // html input attribute
+                type='text'
+                placeholder='6 Digits Postal Code'
+                // pass down to FormLabel as children
+                label='Postal Code'
+                onChange={handlePostalCode}
+            />
 
-		<FormLabel>Gender</FormLabel>
-		<RadioGroup
-			row
-			aria-labelledby="demo-row-radio-buttons-group-label"
-			name="row-radio-buttons-group"
-			type="gender"
-			onChange={handleGender}
-		>
-		<FormControlLabel value="female" control={<Radio />} label="Female" />
-		<FormControlLabel value="male" control={<Radio />} label="Male" />
-		</RadioGroup>
+            <TextField
+                // html input attribute
+                type='number'
+                placeholder='Age'
+                // pass down to FormLabel as children
+                label='Age'
+                onChange={handleAge}
+            />
 
-	 	<button
-            sx={{
-            mt: 10, // margin top
-            }}
-			onClick={handleSubmit} 
-		>
-        Register
-        </button>
-      </Sheet>
-	  );
+            <FormLabel>Gender</FormLabel>
+            <RadioGroup
+                row
+                aria-labelledby='demo-row-radio-buttons-group-label'
+                name='row-radio-buttons-group'
+                type='gender'
+                onChange={handleGender}
+            >
+                <FormControlLabel
+                    value='female'
+                    control={<Radio />}
+                    label='Female'
+                />
+                <FormControlLabel
+                    value='male'
+                    control={<Radio />}
+                    label='Male'
+                />
+            </RadioGroup>
 
+            <button
+                sx={{
+                    mt: 10, // margin top
+                }}
+                onClick={handleSubmit}
+            >
+                Register
+            </button>
+        </Sheet>
+    );
 }
