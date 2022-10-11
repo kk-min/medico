@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { Typography, TextField, FormHelperText , Alert } from "@mui/material";
 import Sheet from '@mui/joy/Sheet';
-import { auth } from "../firebase";
+import { auth,db } from "../firebase";
 import '@firebase/firestore';
 import { createUserWithEmailAndPassword} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import {createUserDoc} from '../firestore functions.js';
 import { FormatColorReset } from "@mui/icons-material";
+import { collection, query, where, getDocs } from "firebase/firestore"; 
 
 
 export default function Register(props) {
@@ -24,6 +25,7 @@ export default function Register(props) {
 	const [postalcode, setPostalCode] = useState('');
 	const [age, setAge] = useState('');
 	const [loading, setLoading] = useState(false);
+	const usersRef = collection(db,'Users');
 
 	{/*const [submitted, setSubmitted] = useState(false);*/}
 	const [error, setError] = useState(false);
@@ -31,7 +33,7 @@ export default function Register(props) {
 	const [message, setMessage] = useState(false);
 	const [acc, setAcc] = useState(false);
 	const [emailerr, setEmailErr] = useState(false);
-	/* const [emailtaken, setEmailTaken] = useState(false); */
+	const [emailtaken, setEmailTaken] = useState(false);
 	const [lenerr, setLenErr] = useState(false);
 	const [pcerror, setPcErr] = useState(false);
 	const [ageerror, setAgeError] = useState(false);
@@ -73,6 +75,8 @@ export default function Register(props) {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		const queryRef = query(usersRef, where("email", "==", email));
+        const querySnapshot = await getDocs(queryRef);
 		setError(false);
 		setPwError(false);
 		setAcc(false);
@@ -81,8 +85,7 @@ export default function Register(props) {
 		setLenErr(false);
 		setPcErr(false);
 		setAgeError(false);
-		/* setEmailTaken(false); */
-		/* const snapshot = await firestore.collection("Users").where("email", "==", email).get(); */
+		setEmailTaken(false); 
 			if (name === '' || email === '' || password === ''|| cpassword===''||gender===''||postalcode===''||age==='') {
 				return setError(true);
 			}
@@ -97,10 +100,10 @@ export default function Register(props) {
 			else if (!isValidEmail(email)) {
 				return setEmailErr(true);
 			}
-			/* else if (snapshot.empty==false)
+			else if (querySnapshot.size!=0)
 			{
 				return setEmailTaken(true);
-			} */
+			}
 			else if (!Number(postalcode)||(postalcode.toString().length!=6)) {
 		
 				return setPcErr(true);
@@ -232,17 +235,19 @@ export default function Register(props) {
 			);
 		  };
 
-		 /*  const emailTakenMessage = () => {
+		 const emailTakenMessage = () => {
 			return (
 			  <div
 				className="emailtaken"
 				style={{
 				  display: emailtaken ? '' : 'none',
 				}}>
-				<h1>Email already exists!</h1>
+				<Alert severity="error">
+				Email already in use!
+           		</Alert>
 			  </div>
 			);
-		  }; */
+		  };
 		  const invalidPostalCode = () => {
 			return (
 			   <div
@@ -302,7 +307,7 @@ export default function Register(props) {
 			{lenMessage()}
 			{invalidPostalCode()}
 			{invalidAge()}
-			{/* {emailTakenMessage()} */}
+			{emailTakenMessage()}
 		</div>
 	 
 		<TextField
