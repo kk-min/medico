@@ -8,6 +8,8 @@ import {
     Typography,
 } from '@mui/material';
 import KeyboardVoiceIcon from '@mui/icons-material/KeyboardVoice';
+import { createChatHistory } from '../firestore functions.js';
+import { serverTimestamp } from 'firebase/firestore';
 
 // Initialize Mic:
 let mic;
@@ -32,9 +34,9 @@ export default function ChatBar(props) {
     };
 
     const handleKeyDown = (event) => {
-        if (event.key == 'Enter' && event.shiftKey) {
+        if (event.key === 'Enter' && event.shiftKey) {
             return;
-        } else if (event.key == 'Enter') {
+        } else if (event.key === 'Enter') {
             handleSend();
             event.preventDefault();
         }
@@ -47,6 +49,20 @@ export default function ChatBar(props) {
         }
         setCurrentText((current) => '');
         // Send to database:
+        /*---------------store msg into firestore when doc/patient hits enter---------*/
+        const uDocRef = props.docRef.uDocRef;
+        const dDocRef = props.docRef.dDocRef;
+        if (uDocRef != null && dDocRef != null) {
+            createChatHistory(
+                uDocRef,
+                dDocRef,
+                serverTimestamp(),
+                props.userName,
+                currentText
+            );
+        } else {
+            console.log('docRef is null');
+        }
     };
 
     const toggleMic = () => {
@@ -90,8 +106,7 @@ export default function ChatBar(props) {
             container
             direction='row'
             alignItems='center'
-            justifyContent='flex-start'
-            spacing={3}
+            justifyContent='space-around'
         >
             <Grid item xs={8} sm={10} flexGrow='1'>
                 <TextField
@@ -130,7 +145,12 @@ export default function ChatBar(props) {
                 )}
             </Grid>
             <Grid item ml={1}>
-                <Button variant='filled' size='large' onClick={handleSend}>
+                <Button
+                    variant='contained'
+                    size='large'
+                    onClick={handleSend}
+                    sx={{ bgcolor: 'dodgerblue' }}
+                >
                     SEND
                 </Button>
             </Grid>

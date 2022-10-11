@@ -20,6 +20,8 @@ import AfterPayment from './pages/AfterPayment';
 import Position from './pages/Position';
 import Login from './pages/Login';
 import LoginDoctor from './pages/LoginDoctor';
+import DoctorSelection from './pages/DoctorSelection';
+import DoctorSideChat from './pages/DoctorSideChat'
 //import Position from './pages/Position';
 
 let isFirefox;
@@ -78,8 +80,22 @@ function App() {
                                     loggedIn={loggedIn}
                                     setLoggedIn={setLoggedIn}
                                 />
+                            } 
+                        />
+                        <Route path='/doctorlogin' element={<div></div>} />
+                        <Route
+                            path='/doctorselection'
+                            element={
+                                <DoctorSelection
+                                    loggedIn={loggedIn}
+                                    setLoggedIn={setLoggedIn}
+                                />
                             }
                         />
+                        <Route 
+                            path='/doctorsidechat' 
+                            element={
+                            <DoctorSideChat/>} />
                         <Route
                             path='/LoginUser'
                             element={
