@@ -18,7 +18,7 @@ export default function LoginUser() {
         setTimeout(async () => { 
         const queryRef = query(usersRef, where("email", "==", email));
         const querySnapshot = await getDocs(queryRef);
-        if (querySnapshot==null)
+        if (querySnapshot.size==0)
         {
             setLoading(false);
             console.log('Wrong Email/Password.');
