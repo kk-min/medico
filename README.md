@@ -1,5 +1,5 @@
 # MediCo
-Copyright © 2022 MediCo (Group 1)
+Copyright © 2023 MediCo (Group 1)
 
 ![logo_transparent_cropped](https://user-images.githubusercontent.com/76023265/196356338-4a0ba752-8ebf-4eb3-adf1-1ee7d96719e6.png)
 
